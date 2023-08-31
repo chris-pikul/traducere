@@ -4,7 +4,7 @@ import { getConfigValue } from './lib/config';
 import { hoverProvider } from './hover';
 import { commandReplace } from './replace';
 import { handleOpenDocument } from './document';
-import { setupLogging } from './logging';
+import { debug, setupLogging } from './logging';
 
 export function activate(context: ExtensionContext) {
     setupLogging();
@@ -23,7 +23,7 @@ export function activate(context: ExtensionContext) {
     );
 
     if (getConfigValue<boolean>('enableTooltip')) {
-        console.log('Registering hover provider for Traducere');
+        debug('Registering hover provider for Traducere');
 
         context.subscriptions.push(
             languages.registerHoverProvider(

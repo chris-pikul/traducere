@@ -1,5 +1,6 @@
 import { TextDocument } from 'vscode';
 import { getContext } from './lib/state';
+import { info } from './logging';
 
 const CACHE_KEY = 'traducere.cache';
 
@@ -24,7 +25,7 @@ export function setCache(cache: Cache): void {
 export function hasDocumentCached(uri: string): boolean {
     const cache = getCache();
     if (!cache) {
-        console.warn('Nothing is cached yet');
+        info('Nothing is cached yet');
         return false;
     }
     return cache.has(uri);
@@ -41,4 +42,5 @@ export function cacheDocument(doc: TextDocument): void {
     cache.set(entry.uri, entry);
 
     setCache(cache);
+    info(`Cached document "${entry.uri}"`);
 }

@@ -7,6 +7,7 @@ import {
 } from 'vscode';
 import { showError, showWarning } from './lib/display';
 import { useBackendService } from './backend';
+import { error } from './logging';
 
 type TranslationResult = {
     selection: Selection;
@@ -17,7 +18,7 @@ type TranslationResult = {
 export async function commandReplace() {
     const editor = window.activeTextEditor;
     if (!editor) {
-        console.error('no active editor exists');
+        error('no active editor exists');
         return;
     }
 
@@ -73,6 +74,7 @@ export async function commandReplace() {
     );
 
     if (!results) {
+        error('Editor edit-builder returned false');
         showError(
             'For some unknown reason, VSCode would not let us translate your selections',
         );

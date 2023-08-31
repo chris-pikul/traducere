@@ -4,7 +4,8 @@
  */
 
 import { TextDocument } from 'vscode';
+import { info } from './logging';
 
 export function handleOpenDocument(doc: TextDocument) {
-    console.log(`Handling opening of document "${doc.uri}`);
+    info(`Handling opening of document "${doc.uri}`);
 }
