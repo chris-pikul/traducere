@@ -4,7 +4,9 @@
  */
 
 import { TextDocument } from 'vscode';
-import { info } from './logging';
+import { debug, info } from './logging';
+import parseDocument from './parser';
+import { cacheDocument } from './cache';
 
 export function handleOpenDocument(doc: TextDocument) {
     if (doc.uri.scheme === 'output' || doc.uri.scheme === 'log') {
@@ -12,4 +14,9 @@ export function handleOpenDocument(doc: TextDocument) {
     }
 
     info(`Handling opening of document "${doc.uri}"`);
+
+    const results = parseDocument(doc);
+    cacheDocument(doc, results);
+
+    debug('Results for document', results);
 }

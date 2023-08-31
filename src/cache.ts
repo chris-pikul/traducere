@@ -1,25 +1,26 @@
 import { TextDocument } from 'vscode';
 import { getContext } from './lib/state';
-import { info } from './logging';
+import { debug, error, info } from './logging';
+import type { ParseResults } from './parser';
 
 const CACHE_KEY = 'traducere.cache';
 
 export type CacheEntry = {
     uri: string;
     languageId: string;
-    data: unknown;
+    blocks: ParseResults;
 };
 
 export type Cache = Map<string, CacheEntry>;
 
 export function getCache(): Cache | undefined {
-    return getContext()?.workspaceState.get(CACHE_KEY);
+    return getContext()?.workspaceState?.get<Cache>(CACHE_KEY);
 }
 
 export function setCache(cache: Cache): void {
     getContext()
-        ?.workspaceState.update(CACHE_KEY, cache)
-        .then(() => {});
+        ?.workspaceState?.update(CACHE_KEY, cache)
+        .then(() => debug('cache was updated'));
 }
 
 export function hasDocumentCached(uri: string): boolean {
@@ -31,14 +32,18 @@ export function hasDocumentCached(uri: string): boolean {
     return cache.has(uri);
 }
 
-export function cacheDocument(doc: TextDocument): void {
-    const cache = getCache() ?? (new Map() as Cache);
+export function cacheDocument(doc: TextDocument, blocks: ParseResults): void {
+    let cache = getCache();
+    if (!cache || typeof cache.set !== 'function') {
+        cache = new Map<string, CacheEntry>() as Cache;
+    }
 
     const entry: CacheEntry = {
         uri: doc.uri.toString(),
         languageId: doc.languageId,
-        data: null,
+        blocks,
     };
+
     cache.set(entry.uri, entry);
 
     setCache(cache);
