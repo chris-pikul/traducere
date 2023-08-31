@@ -10,6 +10,8 @@ export function setupLogging() {
     channel = window.createOutputChannel('Traducere', {
         log: true,
     }) as LogOutputChannel;
+
+    channel.appendLine(`Starting Traducere at ${new Date().toISOString()}`);
 }
 
 export function trace(msg: string, ...args: unknown[]): void {
