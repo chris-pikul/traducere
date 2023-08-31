@@ -6,18 +6,68 @@
   "engines": {
     "vscode": "^1.81.0"
   },
+  "publisher": "chris-pikul",
+  "author": {
+    "name": "Chris Pikul",
+    "email": "ChrisPikul510@gmail.com"
+  },
   "categories": [
     "Other"
   ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "translate",
+    "language",
+    "comments",
+    "localize"
+  ],
+  "galleryBanner": {
+    "theme": "dark",
+    "color": "#162421"
+  },
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "homepage": "https://github.com/chris-pikul/traducere",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chris-pikul/traducere.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chris-pikul/traducere/issues"
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "traducere.helloWorld",
-        "title": "Hello World"
+    "configuration": {
+      "title": "Traducere",
+      "properties": {
+        "traducere.enableContextMenu": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enabled showing Traducere tools in the context menu"
+        },
+        "traducere.backendService": {
+          "type": "string",
+          "enum": ["google", "microsoft", "deepl"],
+          "default": "google",
+          "description": "Selects the desired backend translation service to use"
+        },
+        "traducere.enableTooltip": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enabled showing tooltips on hovering comments with translated content"
+        },
+        "traducere.cacheComments": {
+          "type": "boolean",
+          "default": true,
+          "description": "When true, comment text will be hashed to save on bandwidth when fetching translations",
+          "dependencies": ["traducere.enableTooltip"]
+        }
       }
-    ]
+    },
+    "commands": []
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
