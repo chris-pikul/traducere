@@ -52,8 +52,8 @@
         },
         "traducere.backendService": {
           "type": "string",
-          "enum": ["google", "microsoft", "deepl"],
-          "default": "google",
+          "enum": ["Loopback", "Google", "Microsoft", "DeepL"],
+          "default": "Google",
           "description": "Selects the desired backend translation service to use"
         },
         "traducere.enableTooltip": {
