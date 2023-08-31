@@ -63,7 +63,6 @@
           "type": "boolean",
           "default": true,
           "description": "When true, comment text will be hashed to save on bandwidth when fetching translations",
-          "dependencies": ["traducere.enableTooltip"]
         }
       }
     },
