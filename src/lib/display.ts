@@ -14,8 +14,18 @@ export function showError(message: string, ...items: string[]): void {
 }
 
 /**
+ * Shortcut for showing a warning message on screen.
+ *
+ * @param message Message to desplay
+ * @param items Additional message items, these are usually buttons
+ */
+export function showWarning(message: string, ...items: string[]): void {
+    window.showWarningMessage(message, ...items);
+}
+
+/**
  * Shortcut for showing an info message on screen.
- * 
+ *
  * @param message Message to desplay
  * @param items Additional message items, these are usually buttons
  */

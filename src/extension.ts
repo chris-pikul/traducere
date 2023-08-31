@@ -1,14 +1,18 @@
-import { languages, type ExtensionContext } from 'vscode';
+import { languages, type ExtensionContext, commands, Disposable } from 'vscode';
 import { setContext } from './lib/state';
-import commands from './commands';
-import { type Command, registerCommand } from './lib/commands';
 import { getConfigValue } from './lib/config';
 import { hoverProvider } from './hover';
+import { commandReplace } from './replace';
+
+let cmdReplace: Disposable;
 
 export function activate(context: ExtensionContext) {
     setContext(context);
 
-    commands.forEach((cmd: Command) => registerCommand(context, cmd));
+    cmdReplace = commands.registerCommand(
+        'traducere.translateAndReplace',
+        commandReplace,
+    );
 
     if (getConfigValue<boolean>('enableTooltip')) {
         console.log('Registering hover provider for Traducere');
@@ -20,4 +24,8 @@ export function activate(context: ExtensionContext) {
     }
 }
 
-export function deactivate() {}
+export function deactivate() {
+    if (cmdReplace) {
+        cmdReplace.dispose();
+    }
+}

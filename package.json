@@ -68,7 +68,19 @@
         }
       }
     },
-    "commands": []
+    "commands": [
+      {
+        "command": "traducere.translateAndReplace",
+        "title": "Translate And Replace Selections",
+        "shortTitle": "Translate and Replace"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "traducere.translateAndReplace",
+        "key": "Ctrl+Alt+T"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
