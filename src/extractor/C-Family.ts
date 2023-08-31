@@ -1,5 +1,6 @@
 import { Position, TextDocument } from 'vscode';
 import { removeStrings } from './utils';
+import { getContext } from '../lib/state';
 
 export default function cFamilyExtractor(
     doc: TextDocument,
