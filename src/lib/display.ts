@@ -1,7 +1,7 @@
 /**
  * Provides utilities for showing and presenting information to the user
  */
-import * as vscode from 'vscode';
+import { window } from 'vscode';
 
 /**
  * Shortcut for showing an error message on screen.
@@ -10,5 +10,5 @@ import * as vscode from 'vscode';
  * @param items Additional message items, these are usually buttons
  */
 export function showError(message: string, ...items: string[]): void {
-    vscode.window.showErrorMessage(message, ...items);
+    window.showErrorMessage(message, ...items);
 }

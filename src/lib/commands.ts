@@ -1,7 +1,7 @@
 /**
  * Provides utility libraries for generating and working with extension commands
  */
-import * as vscode from 'vscode';
+import { ExtensionContext, commands, window } from 'vscode';
 import { insertWithGenerator } from './editor';
 
 /**
@@ -72,10 +72,10 @@ export function executeCommand(cmd: Command, ...args: any[]): void {
  * @param cmd Given command to register
  */
 export function registerGeneratorCommand(
-    context: vscode.ExtensionContext,
+    context: ExtensionContext,
     cmd: Command,
 ) {
-    const handle = vscode.commands.registerTextEditorCommand(
+    const handle = commands.registerTextEditorCommand(
         makeCommandKey(cmd.key),
         () => executeCommand(cmd),
     );
@@ -83,16 +83,16 @@ export function registerGeneratorCommand(
 }
 
 export function registerPromptCommand(
-    context: vscode.ExtensionContext,
+    context: ExtensionContext,
     cmd: Command,
 ) {
     if (typeof cmd.prompt === 'undefined')
         throw new Error('Command is missing prompt options');
 
-    const handle = vscode.commands.registerTextEditorCommand(
+    const handle = commands.registerTextEditorCommand(
         makeCommandKey(cmd.key),
         () => {
-            vscode.window
+            window
                 .showInputBox({
                     title: cmd.shortTitle,
                     prompt: cmd.prompt?.message,
@@ -118,13 +118,13 @@ export function registerPromptCommand(
 }
 
 export function registerChainPromptCommand(
-    context: vscode.ExtensionContext,
+    context: ExtensionContext,
     cmd: Command,
 ) {
     if (typeof cmd.prompts === 'undefined' || !Array.isArray(cmd.prompts))
         throw new Error('Command is missing prompts array options');
 
-    const handle = vscode.commands.registerTextEditorCommand(
+    const handle = commands.registerTextEditorCommand(
         makeCommandKey(cmd.key),
         () => {
             if (!cmd.prompts) return;
@@ -137,7 +137,7 @@ export function registerChainPromptCommand(
             const { length } = cmd.prompts;
 
             const prompt = (opts: CommandPrompt) => {
-                vscode.window
+                window
                     .showInputBox({
                         title: cmd.shortTitle,
                         prompt: opts.message,
@@ -183,7 +183,7 @@ export function registerChainPromptCommand(
  * @param cmd Given command to register
  */
 export function registerCommand(
-    context: vscode.ExtensionContext,
+    context: ExtensionContext,
     cmd: Command,
 ) {
     if (cmd.prompt) registerPromptCommand(context, cmd);

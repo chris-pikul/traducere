@@ -1,7 +1,7 @@
 /**
  * Provides utilities for interacting with editors and their text selections
  */
-import * as vscode from 'vscode';
+import { Selection, Position, window } from 'vscode';
 import { showError } from './display';
 import type { OutputFunction } from './commands';
 
@@ -13,14 +13,14 @@ import type { OutputFunction } from './commands';
  * @returns New selection with correct length
  */
 export function getEndSelection(
-    selection: vscode.Selection,
+    selection: Selection,
     source: string,
-): vscode.Selection {
-    const pos = new vscode.Position(
+): Selection {
+    const pos = new Position(
         selection.start.line,
         selection.start.character + source.length,
     );
-    return new vscode.Selection(pos, pos);
+    return new Selection(pos, pos);
 }
 
 /**
@@ -31,10 +31,10 @@ export function getEndSelection(
  * @param source New text to be inserted
  */
 export function insert(source: string): void {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) return showError('No active text editor is available');
 
-    const selections: vscode.Selection[] = [];
+    const selections: Selection[] = [];
     editor
         .edit((builder) => {
             editor.selections.forEach((selection) => {
@@ -58,10 +58,10 @@ export function insertWithGenerator(
     func: OutputFunction,
     ...args: (string | undefined)[]
 ): void {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) return showError('No active text editor is available');
 
-    const selections: vscode.Selection[] = [];
+    const selections: Selection[] = [];
     editor
         .edit((builder) => {
             editor.selections.forEach((selection) => {
