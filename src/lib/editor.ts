@@ -32,7 +32,9 @@ export function getEndSelection(
  */
 export function insert(source: string): void {
     const editor = window.activeTextEditor;
-    if (!editor) return showError('No active text editor is available');
+    if (!editor) {
+        return showError('No active text editor is available');
+    }
 
     const selections: Selection[] = [];
     editor
@@ -59,7 +61,9 @@ export function insertWithGenerator(
     ...args: (string | undefined)[]
 ): void {
     const editor = window.activeTextEditor;
-    if (!editor) return showError('No active text editor is available');
+    if (!editor) {
+        return showError('No active text editor is available');
+    }
 
     const selections: Selection[] = [];
     editor

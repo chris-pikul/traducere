@@ -37,7 +37,9 @@
   "bugs": {
     "url": "https://github.com/chris-pikul/traducere/issues"
   },
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
@@ -62,7 +64,7 @@
         "traducere.cacheComments": {
           "type": "boolean",
           "default": true,
-          "description": "When true, comment text will be hashed to save on bandwidth when fetching translations",
+          "description": "When true, comment text will be hashed to save on bandwidth when fetching translations"
         }
       }
     },
