@@ -6,6 +6,7 @@ import {
 } from 'vscode';
 import { showError } from './lib/display';
 import { useBackendService } from './backend';
+import { extractCommentText } from './extractor';
 
 /**
  * Provides the HoverProvider used by vscode when text is hovered
@@ -21,8 +22,12 @@ export async function hoverProvider(
     pos: Position,
     cancel: CancellationToken,
 ): Promise<Hover | null> {
-    const text = doc.getText(doc.getWordRangeAtPosition(pos));
     try {
+        const text = extractCommentText(doc, pos);
+        if (!text) {
+            return null;
+        }
+
         const results = await useBackendService(text);
         return new Hover(results);
     } catch (err) {
