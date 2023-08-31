@@ -4,6 +4,8 @@ import {
     type Position,
     type TextDocument,
 } from 'vscode';
+import { showError } from './lib/display';
+import { useBackendService } from './backend';
 
 /**
  * Provides the HoverProvider used by vscode when text is hovered
@@ -18,6 +20,18 @@ export async function hoverProvider(
     doc: TextDocument,
     pos: Position,
     cancel: CancellationToken,
-): Promise<Hover> {
-    return new Hover('Hello world');
+): Promise<Hover | null> {
+    const text = doc.getText(doc.getWordRangeAtPosition(pos));
+    try {
+        const results = await useBackendService(text);
+        return new Hover(results);
+    } catch (err) {
+        console.error('Failed to translate for hover provider', err);
+        showError(
+            `Sorry, we could not translate that at this moment. Check your internet connection, or your Traducere settings, and try again`,
+        );
+    }
+
+    // It didn't work
+    return null;
 }
