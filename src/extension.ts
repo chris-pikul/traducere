@@ -3,7 +3,7 @@ import { setContext } from './lib/state';
 import { getConfigValue } from './lib/config';
 import { hoverProvider } from './hover';
 import { commandReplace } from './replace';
-import { handleOpenDocument } from './document';
+import { handleOpenDocument, handleSaveDocument } from './document';
 import { debug, setupLogging } from './logging';
 
 export function activate(context: ExtensionContext) {
@@ -16,6 +16,11 @@ export function activate(context: ExtensionContext) {
     );
     // Get all the currently opened documents
     workspace.textDocuments.forEach(handleOpenDocument);
+
+    // Watch for saves
+    context.subscriptions.push(
+        workspace.onDidSaveTextDocument(handleSaveDocument),
+    );
 
     context.subscriptions.push(
         commands.registerCommand(

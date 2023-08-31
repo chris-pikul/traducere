@@ -53,13 +53,16 @@ export function makeCommandKey(key: string): string {
 
 /**
  * Executes a given command
- * 
+ *
  * @param cmd Command description to execute
  * @param args Any arguments that may be provided to the command
  */
 export function executeCommand(cmd: Command, ...args: any[]): void {
-    if (cmd.isCommand) (cmd.func as CommandFunction).apply(cmd, args);
-    else insertWithGenerator(cmd.func as OutputFunction, ...args);
+    if (cmd.isCommand) {
+        (cmd.func as CommandFunction).apply(cmd, args);
+    } else {
+        insertWithGenerator(cmd.func as OutputFunction, ...args);
+    }
 }
 
 /**
@@ -82,12 +85,10 @@ export function registerGeneratorCommand(
     context.subscriptions.push(handle);
 }
 
-export function registerPromptCommand(
-    context: ExtensionContext,
-    cmd: Command,
-) {
-    if (typeof cmd.prompt === 'undefined')
+export function registerPromptCommand(context: ExtensionContext, cmd: Command) {
+    if (typeof cmd.prompt === 'undefined') {
         throw new Error('Command is missing prompt options');
+    }
 
     const handle = commands.registerTextEditorCommand(
         makeCommandKey(cmd.key),
@@ -101,12 +102,14 @@ export function registerPromptCommand(
                     validateInput: (input: string) => {
                         if (cmd.prompt && cmd.prompt.validator) {
                             const result = cmd.prompt.validator(input);
-                            if (typeof result === 'string') return result;
-                            else if (
+                            if (typeof result === 'string') {
+                                return result;
+                            } else if (
                                 typeof result === 'boolean' &&
                                 result === false
-                            )
+                            ) {
                                 return 'The value you entered is invalid, please try again';
+                            }
                         }
                         return null;
                     },
@@ -121,14 +124,19 @@ export function registerChainPromptCommand(
     context: ExtensionContext,
     cmd: Command,
 ) {
-    if (typeof cmd.prompts === 'undefined' || !Array.isArray(cmd.prompts))
+    if (typeof cmd.prompts === 'undefined' || !Array.isArray(cmd.prompts)) {
         throw new Error('Command is missing prompts array options');
+    }
 
     const handle = commands.registerTextEditorCommand(
         makeCommandKey(cmd.key),
         () => {
-            if (!cmd.prompts) return;
-            if (cmd.prompts.length === 0) return executeCommand(cmd);
+            if (!cmd.prompts) {
+                return;
+            }
+            if (cmd.prompts.length === 0) {
+                return executeCommand(cmd);
+            }
 
             const results: (string | undefined)[] = new Array(
                 cmd.prompts.length,
@@ -146,12 +154,14 @@ export function registerChainPromptCommand(
                         validateInput: (input: string) => {
                             if (opts.validator) {
                                 const result = opts.validator(input);
-                                if (typeof result === 'string') return result;
-                                else if (
+                                if (typeof result === 'string') {
+                                    return result;
+                                } else if (
                                     typeof result === 'boolean' &&
                                     result === false
-                                )
+                                ) {
                                     return 'The value you entered is invalid, please try again';
+                                }
                             }
                             return null;
                         },
@@ -160,9 +170,11 @@ export function registerChainPromptCommand(
                         results[ind] = value;
                         ind++;
 
-                        if (ind < length && cmd.prompts)
+                        if (ind < length && cmd.prompts) {
                             prompt(cmd.prompts[ind]);
-                        else executeCommand(cmd, ...results);
+                        } else {
+                            executeCommand(cmd, ...results);
+                        }
                     });
             };
             prompt(cmd.prompts[ind]);
@@ -182,13 +194,15 @@ export function registerChainPromptCommand(
  * @param context VSCode extension context
  * @param cmd Given command to register
  */
-export function registerCommand(
-    context: ExtensionContext,
-    cmd: Command,
-) {
-    if (cmd.prompt) registerPromptCommand(context, cmd);
-    else if (cmd.prompts) registerChainPromptCommand(context, cmd);
-    else if (typeof cmd.func === 'function')
+export function registerCommand(context: ExtensionContext, cmd: Command) {
+    // New Comment
+    if (cmd.prompt) {
+        registerPromptCommand(context, cmd);
+    } else if (cmd.prompts) {
+        registerChainPromptCommand(context, cmd);
+    } else if (typeof cmd.func === 'function') {
         registerGeneratorCommand(context, cmd);
-    else console.error(`Invalid command "${cmd.key}"!`);
+    } else {
+        console.error(`Invalid command "${cmd.key}"!`);
+    }
 }
