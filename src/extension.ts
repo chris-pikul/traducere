@@ -14,6 +14,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(
         workspace.onDidOpenTextDocument(handleOpenDocument),
     );
+    // Get all the currently opened documents
+    workspace.textDocuments.forEach(handleOpenDocument);
 
     context.subscriptions.push(
         commands.registerCommand(
