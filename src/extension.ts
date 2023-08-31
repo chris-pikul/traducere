@@ -1,31 +1,37 @@
-import { languages, type ExtensionContext, commands, Disposable } from 'vscode';
+import { languages, type ExtensionContext, commands, workspace } from 'vscode';
 import { setContext } from './lib/state';
 import { getConfigValue } from './lib/config';
 import { hoverProvider } from './hover';
 import { commandReplace } from './replace';
-
-let cmdReplace: Disposable;
+import { handleOpenDocument } from './document';
+import { setupLogging } from './logging';
 
 export function activate(context: ExtensionContext) {
+    setupLogging();
     setContext(context);
 
-    cmdReplace = commands.registerCommand(
-        'traducere.translateAndReplace',
-        commandReplace,
+    // Why do it live, when we can extract and cache?
+    context.subscriptions.push(
+        workspace.onDidOpenTextDocument(handleOpenDocument),
+    );
+
+    context.subscriptions.push(
+        commands.registerCommand(
+            'traducere.translateAndReplace',
+            commandReplace,
+        ),
     );
 
     if (getConfigValue<boolean>('enableTooltip')) {
         console.log('Registering hover provider for Traducere');
 
-        languages.registerHoverProvider(
-            { scheme: '*' },
-            { provideHover: hoverProvider },
+        context.subscriptions.push(
+            languages.registerHoverProvider(
+                { scheme: '*' },
+                { provideHover: hoverProvider },
+            ),
         );
     }
 }
 
-export function deactivate() {
-    if (cmdReplace) {
-        cmdReplace.dispose();
-    }
-}
+export function deactivate() {}
