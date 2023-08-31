@@ -15,6 +15,5 @@ export function cleanBlockComment(text: string): string {
 
             return check.trim();
         })
-        .filter((line) => line.length > 0 && line !== '\n' && line !== '\r\n')
         .join('\n');
 }

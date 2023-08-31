@@ -49,3 +49,12 @@ export function cacheDocument(doc: TextDocument, blocks: ParseResults): void {
     setCache(cache);
     info(`Cached document "${entry.uri}"`);
 }
+
+export function getCachedDocument(uri: string): CacheEntry | null {
+    const cache = getCache();
+    if (!cache) {
+        return null;
+    }
+
+    return cache.get(uri) ?? null;
+}

@@ -5,7 +5,7 @@
 import { Backend, services } from './types';
 
 async function loopback(text: string, lang: string): Promise<string> {
-    return text.split('').reverse().join('');
+    return text;
 }
 loopback.service = services.loopback;
 export default loopback satisfies Backend;

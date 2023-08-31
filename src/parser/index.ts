@@ -1,5 +1,5 @@
-import { TextDocument } from 'vscode';
-import type { ParseResults, Parser } from './types';
+import { Position, TextDocument } from 'vscode';
+import type { Block, ParseResults, Parser } from './types';
 
 import CFamily from './c-family';
 
@@ -32,3 +32,19 @@ export function parseDocument(doc: TextDocument): ParseResults {
     throw new Error(`unsupported language`);
 }
 export default parseDocument;
+
+/**
+ * Returns the block at the given position if one exists
+ *
+ * @param blocks ParseResults block array
+ * @param pos Position to search for
+ * @returns Block if it exists, otherwise null
+ */
+export function getBlock(blocks: ParseResults, pos: Position): Block | null {
+    for (let i = 0; i < blocks.length; i++) {
+        if (blocks[i].range.contains(pos)) {
+            return blocks[i];
+        }
+    }
+    return null;
+}

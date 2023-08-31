@@ -3,9 +3,6 @@ import { Block, BlockType, blockTypes, Parser, ParseResults } from './types';
 import { cleanBlockComment } from './utils';
 
 const STRING_CHARS = '"\'`';
-const INLINE_START = '//';
-const BLOCK_START = '/*';
-const BLOCK_END = '*/';
 
 export function cfamilyParser(doc: TextDocument): ParseResults {
     if (doc.lineCount === 0) {
@@ -45,7 +42,7 @@ export function cfamilyParser(doc: TextDocument): ParseResults {
                 // NOT in a block, may be the start of one
                 if (STRING_CHARS.includes(char)) {
                     // Is a string
-                    start = new Position(i, j);
+                    start = new Position(i, j + 1);
                     block = blockTypes.string;
                     closer = char;
                 } else if (char === '/') {
@@ -74,7 +71,7 @@ export function cfamilyParser(doc: TextDocument): ParseResults {
                 if (block === blockTypes.comment) {
                     // Require that the full closer is there
                     if (peek === '/') {
-                        const end = new Position(i, j - 1);
+                        const end = new Position(i, j);
                         const range = new Range(start, end);
                         const text = doc.getText(range);
 
@@ -90,7 +87,7 @@ export function cfamilyParser(doc: TextDocument): ParseResults {
                     }
                 } else {
                     // It was a string
-                    const end = new Position(i, j - 1);
+                    const end = new Position(i, j);
                     const range = new Range(start, end);
                     const text = doc.getText(range);
 
