@@ -6,10 +6,13 @@ import {
 } from 'vscode';
 import { showError } from './lib/display';
 import { useBackendService } from './backend';
-import { extractCommentText } from './extractor';
 import { debug, error } from './logging';
 import { getCachedDocument } from './cache';
 import { getBlock } from './parser';
+
+function makeHoverMessage(text: string): string {
+    return `### Translation \n${text}`;
+}
 
 /**
  * Provides the HoverProvider used by vscode when text is hovered
@@ -54,7 +57,7 @@ export async function hoverProvider(
         if (cancel.isCancellationRequested) {
             return null;
         }
-        return new Hover(results);
+        return new Hover(makeHoverMessage(results));
     } catch (err) {
         error('Failed to translate for hover provider', err);
         showError(
