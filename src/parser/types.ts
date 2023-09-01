@@ -11,6 +11,7 @@ export type Block = {
     range: Range;
     originalText: string;
     cleanText: string;
+    checksum: string;
 };
 
 export type ParseResults = Block[];

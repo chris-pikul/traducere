@@ -1,3 +1,5 @@
+import { createHash } from 'crypto';
+
 /**
  * Removes any initial spacing and preceding * characters from a block comment.
  *
@@ -16,4 +18,15 @@ export function cleanBlockComment(text: string): string {
             return check.trim();
         })
         .join('\n');
+}
+
+/**
+ * Creates an MD5 checksum hash of the given text.
+ *
+ * Uses node crypto.
+ * @param text Text to hash
+ * @returns MD5 hexidecimal checksum
+ */
+export function hash(text: string): string {
+    return createHash('md5').update(text).digest('hex');
 }

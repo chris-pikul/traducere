@@ -1,6 +1,6 @@
 import { Position, Range, TextDocument } from 'vscode';
 import { Block, BlockType, blockTypes, Parser, ParseResults } from './types';
-import { cleanBlockComment } from './utils';
+import { cleanBlockComment, hash } from './utils';
 
 const STRING_CHARS = '"\'`';
 
@@ -48,14 +48,16 @@ export function cfamilyParser(doc: TextDocument): ParseResults {
                 } else if (char === '/') {
                     if (peek === '/') {
                         // Inline comment, can push immediately
+                        const text = line.text.substring(j + 2).trim();
                         results.push({
                             type: blockTypes.comment,
                             range: new Range(
                                 new Position(i, j + 2),
                                 new Position(i, line.text.length),
                             ),
-                            originalText: line.text.substring(j + 2).trim(),
-                            cleanText: line.text.substring(j + 2).trim(),
+                            originalText: text,
+                            cleanText: text,
+                            checksum: hash(text),
                         });
                         ignoreNext = false;
                         break;
@@ -74,12 +76,13 @@ export function cfamilyParser(doc: TextDocument): ParseResults {
                         const end = new Position(i, j);
                         const range = new Range(start, end);
                         const text = doc.getText(range);
-
+                        const clean = cleanBlockComment(text);
                         results.push({
                             type: blockTypes.comment,
                             range,
                             originalText: text,
-                            cleanText: cleanBlockComment(text),
+                            cleanText: clean,
+                            checksum: hash(clean),
                         });
 
                         block = null;
@@ -96,6 +99,7 @@ export function cfamilyParser(doc: TextDocument): ParseResults {
                         range,
                         originalText: text,
                         cleanText: text,
+                        checksum: hash(text),
                     });
 
                     block = null;

@@ -10,23 +10,27 @@ export function activate(context: ExtensionContext) {
     setupLogging();
     setContext(context);
 
-    // Why do it live, when we can extract and cache?
-    context.subscriptions.push(workspace.onDidOpenTextDocument(handleDocument));
-
-    // Get all the currently opened documents
-    workspace.textDocuments.forEach(handleDocument);
-
-    // Watch for saves
-    context.subscriptions.push(workspace.onDidSaveTextDocument(handleDocument));
-
-    context.subscriptions.push(
-        commands.registerCommand(
-            'traducere.translateAndReplace',
-            commandReplace,
-        ),
-    );
-
     if (getConfigValue<boolean>('enableTooltip')) {
+        // Why do it live, when we can extract and cache?
+        context.subscriptions.push(
+            workspace.onDidOpenTextDocument(handleDocument),
+        );
+
+        // Get all the currently opened documents
+        workspace.textDocuments.forEach(handleDocument);
+
+        // Watch for saves
+        context.subscriptions.push(
+            workspace.onDidSaveTextDocument(handleDocument),
+        );
+
+        context.subscriptions.push(
+            commands.registerCommand(
+                'traducere.translateAndReplace',
+                commandReplace,
+            ),
+        );
+
         debug('Registering hover provider for Traducere');
 
         context.subscriptions.push(
