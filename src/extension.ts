@@ -3,7 +3,7 @@ import { setContext } from './lib/state';
 import { getConfigValue } from './lib/config';
 import { hoverProvider } from './hover';
 import { commandReplace } from './replace';
-import { handleOpenDocument, handleSaveDocument } from './document';
+import { handleDocument } from './document';
 import { debug, setupLogging } from './logging';
 
 export function activate(context: ExtensionContext) {
@@ -11,16 +11,13 @@ export function activate(context: ExtensionContext) {
     setContext(context);
 
     // Why do it live, when we can extract and cache?
-    context.subscriptions.push(
-        workspace.onDidOpenTextDocument(handleOpenDocument),
-    );
+    context.subscriptions.push(workspace.onDidOpenTextDocument(handleDocument));
+
     // Get all the currently opened documents
-    workspace.textDocuments.forEach(handleOpenDocument);
+    workspace.textDocuments.forEach(handleDocument);
 
     // Watch for saves
-    context.subscriptions.push(
-        workspace.onDidSaveTextDocument(handleSaveDocument),
-    );
+    context.subscriptions.push(workspace.onDidSaveTextDocument(handleDocument));
 
     context.subscriptions.push(
         commands.registerCommand(
